@@ -7,39 +7,39 @@
 using namespace std;
 
 void CreateProcess() {
-        pid_t pid;
-        pid = fork();
-        if (pid < 0){
+        pid_t pid; //variable to store the process ID
+        pid = fork(); //new process and stores child PID into it 
+        if (pid < 0){//checks if fork worked 
             cout << "Failed\n";
-            exit(0);
+            exit(0);// if not shows error message and exits 
         }else if (pid == 0){
             cout <<"child working\n";
-            execlp("/bin/ls","ls",NULL);
+            execlp("/bin/ls","ls",NULL);//exectues the ls comand 
         } else {
-            wait(NULL);
+            wait(NULL);// waits for the child process to terminate 
             cout<<"Childed Terminated\n";
         }
     }
     
 void TerminateProcess() {
         pid_t pid;
-    if (pid > 0){
+    if (pid > 0){//checks for child PID 
         cout << "\nEnding Child \n";
-        abort();
+        abort();//ends child process if found 
     }else 
-    cout<<"No Child to Terminate\n";
+    cout<<"No Child to Terminate\n";//if not found then prints as such
 }
 
     
 
-void menu (){//menu
+void menu (){
     
     int option;
     
     cout<<"--Main Menu--\n[1]Create Process\n[2]Terminate Process\n[3]Quit\n";
     cin >> option;
     
-    if(option == 1){
+    if(option == 1){ 
         CreateProcess();
     } else if (option == 2){
         TerminateProcess();
@@ -53,4 +53,5 @@ void menu (){//menu
 }    
 int main(){
     menu();
+    return 0;
 }
