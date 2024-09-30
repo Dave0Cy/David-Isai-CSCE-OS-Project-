@@ -23,7 +23,7 @@ void CreateProcess() {
     
 void TerminateProcess() {
         pid_t pid;
-    if (pid < 0){
+    if (pid > 0){
         cout << "\nEnding Child \n";
         abort();
     }else 
