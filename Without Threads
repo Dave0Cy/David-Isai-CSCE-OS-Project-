@@ -29,9 +29,9 @@ int main() {
     int RealTotal = 0;//The actual number of students in the input file 
     double passed;
 
-    while (RealTotal < total) {
-        if (inputfile >> ID >> FinalGrade) {
-            Students[RealTotal] = { ID,FinalGrade };
+    while (RealTotal < total) {//Keeps looping so that all of the array can be inputed and stored  
+        if (inputfile >> ID >> FinalGrade) {//reads inputfile then takes out the id and finalgrade 
+            Students[RealTotal] = { ID,FinalGrade };//stores what was taken from the inputfile
             RealTotal++;
         }
         else {
