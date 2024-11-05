@@ -1,0 +1,84 @@
+#include <iostream>
+#include <algorithm>
+#include <cstdlib>
+#include <pthread.h>
+#include <unistd.h>
+#include <queue>
+
+using namespace std;
+ 
+struct Process {
+     int ID; //Process ID
+     int cpuburst;//CPU burst time
+     int ioburst;//IO burst time
+     bool inio;//check if process is in IO
+     
+     Process(int id, int cpu, int io) : ID(id), cpuburst(cpu), ioburst(io),inio(false) {}
+};
+class Maker {
+    queue<Process> readyQ;
+    queue<Process> waitingQ;
+    
+public:
+    bool Checker() const {
+        return (!readyQ.empty());//checks if any processes are ready in queue
+    }
+    
+    void movetowait(Process Holder){
+        waitingQ.push(Holder);//moves process to waitng queuw for io
+    }
+    
+    void addProcess(Process process){
+        readyQ.push(process);//adds new process to ready queue
+    }
+    
+    Process getNextProcess(){
+        Process next = readyQ.front();
+        readyQ.pop();
+        return next;
+    }
+    
+    void UpdateWaitingQ(){
+        if(!waitingQ.empty()){
+            Process& holder = waitingQ.front();
+            holder.ioburst--;
+            if(holder.ioburst <= 0){//checks if its finished 
+                waitingQ.pop();//takes it out
+                addProcess(holder);//puts it back in ready queue 
+            }
+        }
+    }
+    };
+    int main(){
+        srand(time(0));
+        Maker maker;
+        int cycle = 0;
+        int counter = 0;
+        int cpuburst = 0;
+        int ioburst = 0;
+        
+        while (cycle < 100){
+            if(rand() % 5 == 0){
+            cpuburst = rand() % 30 + 1;//random burst of CPU and IO burst below between 1 - 30
+            ioburst = rand() % 30 + 1;
+            maker.addProcess(Process(counter++,cpuburst,ioburst));//add new process to ready queue
+            cout <<"Process Created: "<<counter - 1 << " at cycle "<< cycle << endl;
+            }
+            
+         if (maker.Checker()) {//checks if ready
+            Process currentProcess = maker.getNextProcess();
+            cout << "Cycle " << cycle << ":\nExecuting Process " << currentProcess.ID 
+            << " for " << currentProcess.cpuburst << " cycles\n";
+            cycle += currentProcess.cpuburst; // Simulate CPU burst
+            
+            currentProcess.inio = true; 
+            maker.movetowait(currentProcess); // Move to waiting queue
+            cout << "Process " << currentProcess.ID << " waiting for IO\n\n";
+           
+        }else {
+            cycle ++;
+        }
+        maker.UpdateWaitingQ(); // Update IO processes
+        }
+        return 0;
+    }
