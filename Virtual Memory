@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int PSize = 2048;//Bytes per page 
+const int NumPages = 10; //Number of pages
+const int PhFrames = 5;//physical frames
+
+struct Process{
+  int ID;
+  int VAddress;//virtual address
+};
+
+int main(){
+    
+    Process table;
+    
+    cout <<"Please Enter ID: ";
+    cin>>table.ID;
+    table.VAddress = 9019;
+    
+    int offset;
+    int VPageNum;//virtualpage numbers
+    int PFrameNum;//physical frame numbers
+    int PhAddress;//physical address 
+    
+    vector<int> PTable(NumPages, -1);
+    
+    for(int i = 0; i<PhFrames;++i){
+        PTable[i] = i; 
+    }
+    
+    VPageNum = table.VAddress / PSize;//caluclates the virtual page number
+    offset = table.VAddress % PSize;//caluclates the offset 
+    
+    if(VPageNum <NumPages && PTable[VPageNum]!= -1){
+    
+        PFrameNum = PTable[VPageNum];
+        PhAddress = PFrameNum * PSize + offset;
+        
+        cout << "\nID: "<<table.ID
+        <<"\nVirtual Address: "<<table.VAddress
+        <<"\nPhysical Address: "<<PhAddress
+        <<"\nVirtual Page Number: "<<VPageNum
+        <<"\nOffset: "<<offset
+        <<"\nMapped to Physical Frame: "<<PFrameNum;
+        
+    }else{//If error in mapping 
+    
+        cout << "\nThere has been an error in mapping \n"
+        << "ID: "<<table.ID
+        <<"\nVirtual Address: "<<table.VAddress
+        <<"\nOffset: "<<offset
+        <<"\nVirtual Page Number : "<<VPageNum<<"--ERROR--\n";
+        
+    }
+}
